@@ -1,20 +1,22 @@
 with p_imagen_escondida, Ada.Text_io, Ada.Integer_Text_IO, Ada.Directories;
 use  p_imagen_escondida, Ada.Text_io, Ada.Integer_Text_IO, Ada.Directories;
 procedure pruebas is
-   --Este programa se ha creado para probar el paquete de implementacion del laboratorio10
-   --Tu programa no tiene por que parecerse a este, aunque puedes usarlo como base
-   --Los subprogramas tampoco tienen que utilizarse todos
-   --Los formatos de los ficheros son fijos, pero la representacion en pantalla es a tu criterio
+   -- Este programa se ha creado para probar el paquete de implementacion del laboratorio10
+   -- Tu programa no tiene por que parecerse a este, aunque puedes usarlo como base
+   -- Los subprogramas tampoco tienen que utilizarse todos
+   -- Los formatos de los ficheros son fijos, pero la representacion en pantalla es a tu criterio
 
-   L_Pistas: T_Lista_E_Pistas;
-   F,C:Integer;
-   Solucion: T_Lista_D_Pistas := null;
-   Opcion: Integer;
+   L_Pistas : T_Lista_E_Pistas;
+   F , C : Integer;
+   Solucion : T_Lista_D_Pistas := null;
+   Opcion : Integer;
+
    type T_nombre_Fichero is record
       name: String(1..100);
       long: Natural;
    end record;
-   nombre_fichero: T_nombre_Fichero;
+
+   nombre_fichero : T_nombre_Fichero;
 
    procedure Seleccionar_fichero (Extension: in String; nombre_fichero:out T_nombre_Fichero) is
       Ficheros: Search_Type;
@@ -25,21 +27,29 @@ procedure pruebas is
    begin
       loop
          I := 0;
-         Start_Search(Search=>Ficheros,
-            Directory=>Current_Directory,
-            Pattern=>"*." & Extension,
-            Filter=>(Ordinary_File=>True, others=>False));
+
+         Start_Search( Search => Ficheros,
+            Directory => Current_Directory,
+            Pattern => "*." & Extension,
+            Filter => ( Ordinary_File => True, others => False ) );
+
          while More_Entries(Ficheros) and I < 9 loop
             I := I + 1;
-            Get_Next_Entry(Ficheros, L_Juegos(I));
-            Put(I,2);Put(" ");
-            Put_line(Simple_name(L_Juegos(I)));
+            Get_Next_Entry( Ficheros , L_Juegos(I) );
+            Put(I , 2); Put(" ");
+            Put_line( Simple_name( L_Juegos(I) ) );
          end loop;
+
          New_Line;
+
          Put("Elige una opcion [0 para salir]->");
+
          Get(Opcion);
+
          exit when Opcion in 0..I;
+
          Put_Line("ERROR: Se esperaba un número entre 0 y"&I'Img);
+
          New_Line;
       end loop;
       if Opcion >0 then
@@ -47,6 +57,7 @@ procedure pruebas is
          nombre_fichero.name(1..nombre_fichero.long) := Base_Name(Simple_Name(L_Juegos(Opcion)));
        end if;
    end Seleccionar_Fichero;
+
 begin
    Put_Line("              :::::::::: ::::::::::: :::        :::                         ");
    Put_Line("              :+:            :+:     :+:        :+:                         ");
@@ -69,7 +80,36 @@ begin
    Put_Line("+#+           +#+    +#+           +#+     +#+    +#+ +#+    +#+ +#+        ");
    Put_Line("#+#           #+#    #+#    #+#    #+#     #+#    #+# #+#    #+# #+#        ");
    Put_Line("###       ########### ########     ###      ########  ###    ### ########## ");
-   Put_Line("Poner aqui tu nombre: (C)2022 APELLIDO1 APELLIDO2, NOMBRE(s)                ");
+
+   New_Line(2);
+
+   Put_Line(" -------------------------------------------------------------- ");
+   Put_Line("|   _____                 _                              _     |");
+   Put_Line("|  / ____|               | |                            | |    |");
+   Put_Line("| | (___  _   _  ___ _ __| |_ ___     ___ _ __ __ _  ___| | __ |");
+   Put_Line("|  \___ \| | | |/ _ \ '__| __/ _ \   / __| '__/ _` |/ __| |/ / |");
+   Put_Line("|  ____) | |_| |  __/ |  | ||  __/  | (__| | | (_| | (__|   <  |");
+   Put_Line("| |_____/ \__,_|\___|_|   \__\___|   \___|_|  \__,_|\___|_|\_\ |");
+   Put_Line("|                                                              |");
+   Put_Line(" --------------------------------------------------------------");                                                    
+   Put_Line("     \                             .       .");
+   Put_Line("      \                           / `.   .'  '' ");
+   Put_Line("       \                  .---.  <    > <    >  .---.");
+   Put_Line("        \                 |    \  \ - ~ ~ - /  /    |");
+   Put_Line("              _____          ..-~             ~-..-~");
+   Put_Line("             |     |   \~~~\.'                    `./~~~/");
+   Put_Line("            ---------   \__/                        \__/");
+   Put_Line("           .'  O    \     /               /       \  '' ");
+   Put_Line("          (_____,    `._.'               |         }  \/~~~/");
+   Put_Line("           `----.          /       }     |        /    \__/");
+   Put_Line("                 `-.      |       /      |       /      `. ,~~|");
+   Put_Line("                     ~-.__|      /_ - ~ ^|      /- _      `..-'   ");
+   Put_Line("                          |     /        |     /     ~-.     `-. _  _  _");
+   Put_Line("                          |_____|        |_____|         ~ - . _ _ _ _ _>");
+
+
+   New_Line(2);
+   Put_Line("(C)2022 Li Loaiza, Yeray                ");
    loop
       loop
          Put_Line("+================+");
@@ -87,6 +127,7 @@ begin
          Put_Line("ERROR: Se esperaba un numero entre 0 y 4");
          New_Line;
       end loop;
+
       exit when Opcion = 0;
       case Opcion is
          when 1 =>
