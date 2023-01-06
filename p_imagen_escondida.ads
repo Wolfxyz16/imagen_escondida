@@ -9,53 +9,62 @@ package P_Imagen_Escondida is
    -- de implementaci�n del paquete (as� estar�n disponibles solo para tus programas,
    -- pero no para los usuarios del paquete)
    type T_Casilla is (Duda, Blanco, Negro);
-   type T_contador is array (T_casilla) of Natural;
+   type T_Contador is array ( T_Casilla ) of Natural;
 
    type T_Imagen is array(Integer range <>, Integer range <>) of T_Casilla;
 
-   function Es_Lateral(Img:in T_Imagen; Fil,Col:in Positive)
-      return Boolean;
+   function Es_Lateral( Img : in T_Imagen ; Fil , Col : in Positive ) return Boolean;
    --Post: True <-> Fila y col es una posici�n Lateral de Img
-   function Es_Esquina(Img:in T_Imagen; Fil,Col:in Positive)
-      return Boolean;
+
+   function Es_Esquina( Img : in T_Imagen ; Fil , Col : in Positive ) return Boolean;
    --Post: True <-> Fila y col es una posici�n de esquina de Img
-   function Es_Interior(Img: in T_Imagen; Fil,Col: in Positive)
-      return Boolean;
+
+   function Es_Interior( Img : in T_Imagen ; Fil , Col : in Positive ) return Boolean;
    --Post: True <-> Fila y col es una posici�n interior de Img
 
-   function Imagen_vacia(filas,columnas: in Integer) return T_Imagen;
+   function Imagen_vacia( filas , columnas : in Positive ) return T_Imagen;
    --pre: filas, columnas > 0
    --post: resultado es una imagen de filas x columnas inicializada a dudas
-   procedure Mostrar(Img: in T_Imagen);
+
+   procedure Mostrar( Img : in T_Imagen );
    --Salida: Muestra en pantalla el contenido de la imagen oculta
-   procedure Contar_cuadros(Img: in T_Imagen; Fil, Col: in Integer;
-      Contador: out T_contador);
+
+   function Existe_coordenadas( Img : in T_Imagen ; Fil , Col : in Integer );
+   --Post: True <-> Las coordenadas están dentro del rango de la imagen
+
+   procedure Contar_cuadros( Img : in T_Imagen ; Fil , Col : in Integer ; Contador : out T_contador );
    -- Post: contador cuenta cuantas casillas blancas, negras y duda hay
    -- en las nueve (generalmente) casillas que designa el recuadro con
    -- centro en (fila, columna)
-   function Completa (Img: in T_Imagen) return Boolean;
+   
+   function Completa ( Img : in T_Imagen ) return Boolean;
    --Post: Resultado=true <-> I es una imagen sin dudas
 
-   type T_Pista is record
-      Fil, Col, Valor: Integer;
+   type T_Pista is record 
+      Fil , Col , Valor : Integer;
    end record;
-   procedure Colorear (Img: in out T_Imagen; P: in T_Pista);
+
+   procedure Colorear (Img : in out T_Imagen ; P : in T_Pista);
    --pre: P es una pista que se puede resolver
    --Post: Imagen integra la pista dada
 
    type T_Vector_pistas is array (Integer range <>) of T_Pista;
+
    type T_Lista_E_Pistas is record
-      Cont: Natural;
-      Rest: T_Vector_Pistas(1..1000);
+      Cont : Natural;
+      Rest : T_Vector_Pistas( 1 .. 1000 );
    end record;
+
    procedure Mostrar(L: in T_Lista_E_Pistas);
    --Salida: Muestra en pantalla el contenido de las pistas
+
    procedure Anadir(L: in out T_Lista_E_Pistas; P: in T_Pista);
    --post: anade a L al final, la pista P
+
    procedure Borrar(L: in out T_Lista_E_Pistas; P: in T_Pista);
    --post: Borra de L la pista P
-   procedure Buscar_Pista(Lp: in T_Lista_E_Pistas; Img: in T_Imagen;
-      P: out T_Pista);
+
+   procedure Buscar_Pista( Lp : in T_Lista_E_Pistas ; Img : in T_Imagen ; P : out T_Pista );
    --Post: P es una pista de LP que se puedde aplicar en Img
 
    type T_Nodo_Pista;

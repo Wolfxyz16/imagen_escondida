@@ -3,103 +3,203 @@ package body P_Imagen_Escondida is
   ----------------
   -- Es_Lateral --
   ----------------
-
-  function Es_Lateral(
-    Img:in T_Imagen;
-    Fil,Col:in Positive) return Boolean
-  is
+  function Es_Lateral( Img : in T_Imagen ; Fil , Col : in Positive ) return Boolean is
   begin
-    return img(fil,fil)=img(col,col);
+
+    if ( Fil = Img'First(1) OR Fil = Img'First(2) ) 
+    OR ( Col = Img'Last(1) OR Col = Img'Last(2) ) then
+      return True;
+    end if;
+
+    return False;
+
   end Es_Lateral;
 
   ----------------
   -- Es_Esquina --
   ----------------
-
-  function Es_Esquina(
-    Img:in T_Imagen;
-    Fil,Col:in Positive) return Boolean
-  is
+  function Es_Esquina( Img : in T_Imagen ; Fil , Col : in Positive ) return Boolean is
   begin
-    return img(fil,fil)=img(col,col);
+
+    if ( Fil = Img'First(1) OR Fil = Img'First(2) ) 
+    AND ( Col = Img'Last(1) OR Col = Img'Last(2) ) then
+      return True;
+    end if;
+
+    return False;
+  
   end Es_Esquina;
 
   -----------------
   -- Es_Interior --
   -----------------
-
-  function Es_Interior(
-    Img: in T_Imagen;
-    Fil,Col: in Positive)return Boolean
-  is
+  function Es_Interior( Img : in T_Imagen ; Fil , Col : in Positive ) return Boolean is
   begin
-    return img(fil,fil)=img(col,col);
+
+    if not ( Fil = Img'First(1) OR Fil = Img'First(2) ) 
+    AND not ( Col = Img'Last(1) OR Col = Img'Last(2) ) then
+      return True;
+    end if;
+
+    return False;
+
   end Es_Interior;
 
-   ------------------
-   -- Imagen_vacia --
-   ------------------
+  ------------------
+  -- Imagen_vacia --
+  ------------------
+  function Imagen_Vacia ( Filas , Columnas : in Integer ) return T_Imagen is
+    I : constant T_Imagen( 1 .. Filas , 1 .. Columnas ) := ( others => ( others => Duda ) );
+  begin
+    return I;
+  end Imagen_vacia;
 
-   function Imagen_Vacia (
-       Filas,Columnas: in Integer) return T_Imagen is
-     I:constant T_Imagen(1..Filas,1..Columnas):=(others=>(others=>Duda));
-   begin
-      return I;
-   end Imagen_vacia;
+  -------------
+  -- Mostrar --
+  -------------
+  procedure Mostrar ( Img : in T_Imagen ) is
+  begin
 
-   -------------
-   -- Mostrar --
-   -------------
+    for I in Img'Range(1) loop
+      for J in Img'Range(2) loop
+        
+        if Img( I , J ) = Negro then
+          Put("■");
 
-   procedure Mostrar (Img: in T_Imagen) is null;
+        elsif Img( I , J ) = Blanco then
+          Put("⛶");
 
-   --------------------
-   -- Contar_cuadros --
-   --------------------
+        else
+          Put("⁇");
 
-   procedure Contar_cuadros
-     (Img: in T_Imagen;
-      Fil, Col: in Integer;
-      Contador: out T_contador)
-   is null;
+        end if;
 
-   --------------
-   -- Completa --
-   --------------
+      end loop;
+      New_line;
+    end loop;
 
-   function Completa (Img: in T_Imagen) return Boolean is
-   begin
-      return Img = Img;
-   end Completa;
+  end Mostrar;
 
-   --------------
-   -- Colorear --
-   --------------
+  ------------------------
+  -- Existe_coordenadas --
+  ------------------------
+  function Existe_coordenadas(Img : in T_Imagen ; Fil , Col : in Integer) return Boolean is
+  begin
 
-   procedure Colorear (Img: in out T_Imagen; P: in T_Pista) is null;
+    if Fil in Img'Range(1) AND Col in Img'Range(2) then
+      return True;
+    end if;
 
-   -------------
-   -- Mostrar --
-   -------------
+    return False;
 
-   procedure Mostrar (L: in T_Lista_E_Pistas) is null;
+  end Existe_coordenadas;
 
-   ------------
-   -- Anadir --
-   ------------
+  --------------------
+  -- Contar_cuadros --
+  --------------------
+  procedure Contar_cuadros(Img : in T_Imagen ; Fil , Col : in Integer ; Contador : out T_contador) is
+  begin
 
-   procedure Anadir (L: in out T_Lista_E_Pistas; P: in T_Pista) is null;
+    for I in Fil - 1 .. Fil + 1 loop
+      for J in Col -1 .. Col + 1 loop
+        if Existe_coordenadas( Img , Fil , Col ) then
 
-   ------------
-   -- Borrar --
-   ------------
+          case Img( I , J ) is
+            when Duda =>
 
-   procedure Borrar (L: in out T_Lista_E_Pistas; P: in T_Pista) is null;
+              Contador(1) := Contador(1) + 1;
+
+            when Blanco =>
+
+              Contador(2) := Contador(2) + 1;
+
+            when Negro =>
+
+              Contador(3) := Contador(3) + 1;
+
+          end case;
+
+        end if;
+      end loop;
+    end loop;
+
+  end Contar_cuadros;
+
+  --------------
+  -- Completa --
+  --------------
+  function Completa (Img: in T_Imagen) return Boolean is
+  begin
+    for I in Img'Range(1) loop
+      for J in Img'Range(2) loop
+        
+        if Img( I , J ) = Duda then
+          return False;
+        end if;
+
+      end loop;
+    end loop;
+
+    return True;
+  end Completa;
+
+  --------------
+  -- Colorear --
+  --------------
+  procedure Colorear ( Img : in out T_Imagen ; P : in T_Pista ) is
+    contador : T_Contador;
+  begin
+    Contar_cuadros( Img , P.Fil , P.Col , contador );
+
+    if P.Valor = contador(3) then -- hay tantas
+
+    end if;
+
+  end Colorear;
+
+  -------------
+  -- Mostrar --
+  -------------
+  procedure Mostrar (L: in T_Lista_E_Pistas) is
+  begin
+
+    Put_Line("Pistas: ");
+
+    for I in L.Rest'First .. L.Cont loop
+
+      Put_Line("Posición: (fila, columna)");
+      Put( L.Rest(1) & ", " & L.Rest(2) );
+      
+      New_line;
+
+      Put("Valor: " & L.Rest(3) );
+
+      New_line(2);
+
+    end loop;
+
+  end Mostrar;
+
+  ------------
+  -- Anadir --
+  ------------
+  procedure Anadir (L: in out T_Lista_E_Pistas; P: in T_Pista) is
+  begin
+
+    if L.Cont < L.Rest'Length then
+      
+    end if;
+
+  end Anadir;
+
+  ------------
+  -- Borrar --
+  ------------
+  procedure Borrar (L: in out T_Lista_E_Pistas; P: in T_Pista) is null;
 
    ------------------
    -- Buscar_Pista --
    ------------------
-
    procedure Buscar_Pista
      (Lp: in T_Lista_E_Pistas;
       Img: in T_Imagen;
@@ -109,7 +209,6 @@ package body P_Imagen_Escondida is
    --------------
    -- longitud --
    --------------
-
    function longitud (L:in T_Lista_D_Pistas) return Natural is
    begin
       return Boolean'pos(L=null);
@@ -118,27 +217,23 @@ package body P_Imagen_Escondida is
    ------------
    -- Anadir --
    ------------
-
    procedure Anadir (L: in out T_Lista_D_Pistas; P: in T_Pista) is null;
 
    ----------------
    -- Concatenar --
    ----------------
-
    procedure Concatenar (L1,L2: in out T_Lista_D_Pistas) is null;
 
 
    -------------
    -- Mostrar --
    -------------
-
    procedure Mostrar (L: in T_Lista_D_Pistas) is null;
 
 
    -------------------
    -- Iniciar_Juego --
    -------------------
-
    procedure Iniciar_Juego
      (Ruta: in String;
       filas,columnas:  out Integer;

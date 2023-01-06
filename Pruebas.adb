@@ -131,10 +131,12 @@ begin
       exit when Opcion = 0;
       case Opcion is
          when 1 =>
+
             Seleccionar_fichero("txt",nombre_fichero);
             Put("Cargando " & nombre_Fichero.name(1..nombre_fichero.long) &"..."); New_Line;
             Iniciar_Juego(nombre_Fichero.name(1..nombre_fichero.long),F,C,L_Pistas);
             Fase_1(F,C,L_Pistas,Solucion);
+            
          when 2 =>
             Seleccionar_fichero("txt",nombre_fichero);
             Put("Cargando " & nombre_Fichero.name(1..nombre_fichero.long) &"..."); New_Line;
@@ -156,5 +158,7 @@ begin
             Guardar_Juego(nombre_Fichero.name(1..nombre_fichero.long), F,C,L_Pistas, Solucion);
       end case;
    end loop;
+
    Put_Line("Fin del programa");
+
 end pruebas;
