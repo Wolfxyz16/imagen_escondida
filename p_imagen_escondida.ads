@@ -78,18 +78,20 @@ package P_Imagen_Escondida is
       Pista: T_Pista;
       Sig: T_Lista_d_Pistas;
    end record;
-   function longitud(L:in T_Lista_D_Pistas) return Natural;
+   function longitud( L : in T_Lista_D_Pistas ) return Natural;
    --post: Resultado es el numero de elementos de L
-   procedure Anadir(L: in out T_Lista_D_Pistas; P: in T_Pista);
+
+   procedure Anadir( L : in out T_Lista_D_Pistas ; P : in T_Pista );
    --post: anade a L al final, la pista P
 
-   procedure Concatenar(L1,L2: in out T_Lista_D_Pistas);
+   procedure Concatenar( L1 , L2 : in out T_Lista_D_Pistas );
    --post: anade a L2 al final de L1
+
    procedure Mostrar(L: in T_Lista_D_Pistas);
    --Salida: Muestra en pantalla el contenido de las pistas de la solucion
 
 
-   procedure Iniciar_Juego(Ruta: in String; filas,columnas:  out Integer; LP :  out T_Lista_E_Pistas);
+   procedure Iniciar_Juego( Ruta : in String ; filas , columnas : out Integer ; LP : out T_Lista_E_Pistas );
    -- Post: Carga el fichero indicado en ruta que tiene un juego
    --       Img tiene la imagen llena de dudas
    --       LP tiene la lista de pistas a resolver
@@ -111,11 +113,11 @@ package P_Imagen_Escondida is
    --       Img tiene la imagen en el estado actual
    --       LP tiene la lista de pistas a resolver
 
-   function Es_Posible_Resolver(Img: in T_Imagen; P: in T_Pista)
-      return Boolean;
+   function Es_Posible_Resolver(Img: in T_Imagen; P: in T_Pista) return Boolean;
    -- Post: Resultado = true <-> si la pista P se puede resolver en
    --                            el estado actual de la imagen I
-   procedure Obtener_Pista(Filas,Columnas: in Integer; Lp: in T_Lista_E_Pistas; P: out T_Pista);
+
+   procedure Obtener_Pista(Filas,Columnas: in Integer ; Lp : in T_Lista_E_Pistas; P : out T_Pista);
    --Entrada: numeros de filas y columnas (en el teclado) terminado en un par que están entre 1..Filas y 1..Columnas
    --         y que exista una pista con ese numero de fila y de columna especificado
    --Datos: numero maximo de filas de filas y columnas aceptable
@@ -123,7 +125,7 @@ package P_Imagen_Escondida is
    --Post: Devuelve la primera pista de LP cuya fila y columna se haya especificado por teclado y coincida
 
    function Resolver(Filas, Columnas: in Integer; Lp: in T_Lista_E_Pistas) return T_Imagen;
-   --post: REsultado es la imagen que se obtiene al resolver el maximo de pistas de la lista LP
+   --post: Resultado es la imagen que se obtiene al resolver el maximo de pistas de la lista LP
    --      (hasta que no se pueda ninguna mas o esté completa la imagen)
 
    procedure Fase_1(filas, columnas: in Integer; Lp:in out T_Lista_E_Pistas; Sol: out T_lista_D_Pistas);

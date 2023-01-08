@@ -1,3 +1,6 @@
+with Ada.Text_IO, Ada.Integer_Text_IO, Ada.Directories;
+use  Ada.Text_IO, Ada.Integer_Text_IO, Ada.Directories;
+
 package body P_Imagen_Escondida is
 
   ----------------
@@ -48,7 +51,7 @@ package body P_Imagen_Escondida is
   ------------------
   -- Imagen_vacia --
   ------------------
-  function Imagen_Vacia ( Filas , Columnas : in Integer ) return T_Imagen is
+  function Imagen_Vacia ( Filas , Columnas : in Positive ) return T_Imagen is
     I : constant T_Imagen( 1 .. Filas , 1 .. Columnas ) := ( others => ( others => Duda ) );
   begin
     return I;
@@ -107,15 +110,15 @@ package body P_Imagen_Escondida is
           case Img( I , J ) is
             when Duda =>
 
-              Contador(1) := Contador(1) + 1;
+              Contador(Duda) := Contador(Duda) + 1;
 
             when Blanco =>
 
-              Contador(2) := Contador(2) + 1;
+              Contador(Blanco) := Contador(Blanco) + 1;
 
             when Negro =>
 
-              Contador(3) := Contador(3) + 1;
+              Contador(Negro) := Contador(Negro) + 1;
 
           end case;
 
@@ -241,19 +244,18 @@ package body P_Imagen_Escondida is
       Pintar_Blanco( Img , P.Fil , P.Col);
     
     elsif 
-      Es_Esquina( Img , P.Fil , P.Col) AND P.Valor = 4 OR
-      Es_Lateral( Img , P.Fil , P.Col ) AND P.Valor = 6 OR
-      Es_Interior( Img , P.Fil , P.Col ) AND P.Valor = 9 then
+      (Es_Esquina( Img , P.Fil , P.Col) AND P.Valor = 4) OR
+      (Es_Lateral( Img , P.Fil , P.Col ) AND P.Valor = 6) OR
+      (Es_Interior( Img , P.Fil , P.Col ) AND P.Valor = 9) then
       -- todas las casilla se PINTAN de negro
 
       Pintar_Negro( Img , P.Fil , P.Col);
     
-    elsif P.Valor = contador(3) then -- todas las negras estan pintadas, son blancas las dudas
+    elsif P.Valor = contador(Negro) then -- todas las negras estan pintadas, son blancas las dudas
       Pintar_Blanco( Img , P.Fil , P.Col);
 
-    elsif contador(1) + contador(3) = P.Valor then -- ya se han pintado todas las blancas, hay q pintar negras
+    elsif contador(Duda) + contador(Negro) = P.Valor then -- ya se han pintado todas las blancas, hay q pintar negras
     Pintar_Negro( Img , P.Fil , P.Col);
-
 
     end if;
 
@@ -262,7 +264,7 @@ package body P_Imagen_Escondida is
   -------------
   -- Mostrar --
   -------------
-  procedure Mostrar (L: in T_Lista_E_Pistas) is
+  procedure Mostrar ( L : in T_Lista_E_Pistas ) is
   begin
 
     Put_Line("Pistas: ");
@@ -270,11 +272,12 @@ package body P_Imagen_Escondida is
     for I in L.Rest'First .. L.Cont loop
 
       Put_Line("Posición: (fila, columna)");
-      Put( L.Rest(1) & ", " & L.Rest(2) );
+      Put( L.Rest(1).Fil ); Put(", ");
+      Put( L.Rest(2).Col );
       
       New_line;
 
-      Put("Valor: " & L.Rest(3) );
+      Put("Valor: "); Put(L.Rest(3).Valor);
 
       New_line(2);
 
@@ -304,9 +307,9 @@ package body P_Imagen_Escondida is
 
     loop
 
-      if P = L( I ) then
+      if P = L.Rest( I ) then
 
-        L( I .. L.Cont - 1 ) := L( I + 1 .. L.Cont);
+        L.Rest( I .. L.Cont - 1 ) := L.Rest( I + 1 .. L.Cont);
         L.Cont := L.Cont - 1;
         exit;
 
@@ -325,139 +328,336 @@ package body P_Imagen_Escondida is
   ------------------
   procedure Buscar_Pista( Lp : in T_Lista_E_Pistas ; Img : in T_Imagen ; P : out T_Pista ) is
     -- P es una pista que se puede aplicar en img
-    I : Integer := Lp'First;
+    -- Si devuelve una pista con valor Integer'First es que no hay mas pista que se puedan resolver
+    I : Integer := Lp.Rest'First;
+    pista : T_Pista := ( 1 , 1 , Integer'First );
   begin
 
     loop
 
-      exit when I = L.Cont;
+      if Es_Posible_Resolver( Img , Lp.Rest(I) ) then
+        pista := Lp.Rest(I);
+        exit;
+      end if;
+
+      exit when I = Lp.Cont;
 
       I := I + 1;
 
     end loop;
 
+    P := pista;
+
   end Buscar_Pista;
 
-   --------------
-   -- longitud --
-   --------------
-   function longitud (L:in T_Lista_D_Pistas) return Natural is
-   begin
-      return Boolean'pos(L=null);
-   end longitud;
+  --------------
+  -- longitud --
+  --------------
+  function longitud( L : in T_Lista_D_Pistas ) return Natural is
+    aux : T_Lista_D_Pistas := L;
+    contador : Natural := 0;
+  begin
 
-   ------------
-   -- Anadir --
-   ------------
-   procedure Anadir (L: in out T_Lista_D_Pistas; P: in T_Pista) is null;
+    while aux /= null loop
 
-   ----------------
-   -- Concatenar --
-   ----------------
-   procedure Concatenar (L1,L2: in out T_Lista_D_Pistas) is null;
+      contador := contador + 1;
 
+      aux := aux.Sig;
 
-   -------------
-   -- Mostrar --
-   -------------
-   procedure Mostrar (L: in T_Lista_D_Pistas) is null;
+    end loop;
 
+    return contador;
 
-   -------------------
-   -- Iniciar_Juego --
-   -------------------
-   procedure Iniciar_Juego ( Ruta : in String ; filas ,columnas : out Integer ; LP :  out T_Lista_E_Pistas )
-   is begin
+  end longitud;
 
-   end Iniciar_Juego;
+  ------------
+  -- Anadir --
+  ------------
+  procedure Anadir ( L : in out T_Lista_D_Pistas ; P : in T_Pista ) is
+    aux : T_Lista_D_Pistas := L;
+  begin
 
+    loop
 
-   -------------------
-   -- Guardar_Juego --
-   -------------------
+      if aux.Sig = null then
+        aux.Sig := new T_Nodo_Pista'( P , null );
+        exit;
+      end if;
 
-   procedure Guardar_Juego
-     (filename: in String;
-      fils,cols:  in Integer;
-      Lp :  in T_Lista_e_Pistas;
-      LS :  in T_lista_D_Pistas)
-   is null;
+      aux := aux.Sig;
 
+    end loop;
 
-   --------------------
-   -- Reanudar_Juego --
-   --------------------
+  end Anadir;
 
-   procedure Reanudar_Juego
-     (filename: in String;
-      filas, columnas:  out Integer;
-      Lp :  out T_Lista_e_Pistas;
-      LS :  out T_lista_D_Pistas)
-   is null;
+  ----------------
+  -- Concatenar --
+  ----------------
+  procedure Concatenar ( L1 , L2 : in out T_Lista_D_Pistas ) is
+    aux_l1 : T_Lista_D_Pistas := L1;
+  begin
 
+    loop
 
-   -------------------------
-   -- Es_Posible_Resolver --
-   -------------------------
+      if aux_l1.Sig = null then
+        aux_l1.Sig := new T_Nodo_Pista'( L2.Pista , L2.Sig );
+        exit;
+      end if;
 
-   function Es_Posible_Resolver
-     (Img: in T_Imagen;
-      P: in T_Pista)
-      return Boolean
-   is
-   begin
-     if P.fil=P.col then  --eliminar el doble return
-       return Img = Img;
-       else
-       return Img/=Img;
-     end if;
-   end Es_Posible_Resolver;
+      aux_l1 := aux_l1.Sig;
 
-   -------------------
-   -- Obtener_Pista --
-   -------------------
+    end loop;
 
-   procedure Obtener_Pista
-     (Filas,Columnas: in Integer;
-      Lp: in T_Lista_E_Pistas;
-      P: out T_Pista)
-   is null;
+  end Concatenar;
 
 
-   --------------
-   -- Resolver --
-   --------------
+  -------------
+  -- Mostrar --
+  -------------
+  procedure Mostrar ( L : in T_Lista_D_Pistas ) is
+    aux : T_Lista_D_Pistas := L;
+  begin
 
-   function Resolver
-     (Filas, Columnas: in Integer;
-      Lp: in T_Lista_E_Pistas)
-      return T_Imagen
-   is
-     I:constant T_Imagen(1..Filas,1..Columnas):=(others=>(others=>Duda));
-   begin
-      return I;
-   end Resolver;
+    while aux /= null loop
 
-   ------------
-   -- Fase_1 --
-   ------------
+      Put_Line("Posición: (fila, columna)");
+      Put( L.Pista.Fil ); Put(", ");
+      Put( L.Pista.Col );
+      
+      New_line;
 
-   procedure Fase_1
-     (filas, columnas: in Integer;
-      Lp:in out T_Lista_E_Pistas;
-      Sol: out T_lista_D_Pistas)
-   is  null;
+      Put("Valor: "); Put( L.Pista.Valor );
+
+      New_line(2);
+
+      aux := aux.Sig;
+
+    end loop;
+
+  end Mostrar;
 
 
-   ------------
-   -- Fase_2 --
-   ------------
+  -------------------
+  -- Iniciar_Juego --
+  -------------------
+  procedure Iniciar_Juego ( Ruta : in String ; filas , columnas : out Integer ; LP : out T_Lista_E_Pistas ) is
+    F : File_Type;
+    Caracter : Character;
+    L : T_Lista_E_Pistas := (Cont => 0 , Rest => ( others => (Fil => 0, Col => 0, Valor => 0) ) );
+    indice : Integer := Lp.Rest'First;
+  begin
+    Open( F , In_File , Ruta & ".txt" );
+    Get( F , filas );
+    Get( F , columnas ); 
+    Skip_Line( F );
 
-   procedure Fase_2
-     (filas, columnas: in Integer;
-      LP: in out T_Lista_E_Pistas;
-      Sol: in out T_Lista_D_Pistas)
-   is null;
+    for I in 1..filas loop
+
+      for J in 1..columnas loop
+
+        Get( F, Caracter );
+
+        if Caracter /= '.' then
+
+          Lp.Rest( indice ) := ( Fil => I, Col => J, Valor => Integer'Value( ( 1 => Caracter ) ) );
+
+          Lp.Cont := Lp.Cont + 1;
+
+        end if;
+
+        indice := indice + 1;
+
+      end loop;
+
+      Skip_Line(F);
+      
+    end loop;
+
+    Close(F);
+
+  end Iniciar_Juego;
+
+
+  -------------------
+  -- Guardar_Juego --
+  -------------------
+  procedure Guardar_Juego( filename : in String ; fils , cols : in Integer ; Lp : in T_Lista_E_Pistas ; Ls : in T_lista_D_Pistas) is
+    F : File_Type;
+    pistas_length : Natural := Lp.Cont;
+    aux : T_Lista_D_Pistas := Ls;
+  begin
+    Create( F , In_File , filename & ".txt" );
+    Put( F , fils );
+    Put( F , cols );
+
+    Skip_Line( F );
+
+    Put( F , pistas_length );
+
+    for I in 1..pistas_length loop
+
+      Put( F , Lp.Rest(I).Fil );
+      Put( F , Lp.Rest(I).Col );
+      Put( F , Lp.Rest(I).Valor );
+      
+    end loop;
+
+    Skip_Line(F);
+
+    while aux /= null loop
+      Put( F , aux.Pista.Fil );
+      Put( F , aux.Pista.Col );
+      Put( F , aux.Pista.Valor );
+
+      aux := aux.Sig;
+    end loop;
+
+    Close(F);
+  end Guardar_Juego;
+
+
+  --------------------
+  -- Reanudar_Juego --
+  --------------------
+  procedure Reanudar_Juego( filename : in String ; filas , columnas : out Integer ; Lp : out T_Lista_e_Pistas ; LS : out T_lista_D_Pistas ) is
+    F : File_Type;
+    pistas_length : Natural := Lp.Cont;
+    aux : T_Lista_D_Pistas := Ls;
+  begin
+    Open( F , In_File , filename & ".txt" );
+    Get( F , filas );
+    Get( F , columnas );
+
+    Skip_Line( F );
+
+    Get( F , pistas_length );
+
+    for I in 1..pistas_length loop
+
+      Get( F , Lp.Rest(I).Fil );
+      Get( F , Lp.Rest(I).Col );
+      Get( F , Lp.Rest(I).Valor );
+      
+    end loop;
+
+    Skip_Line(F);
+
+    while aux /= null loop
+      Get( F , aux.Pista.Fil );
+      Get( F , aux.Pista.Col );
+      Get( F , aux.Pista.Valor );
+
+      aux := aux.Sig;
+    end loop;
+
+    Close(F);
+  end Reanudar_Juego;
+
+
+  -------------------------
+  -- Es_Posible_Resolver --
+  -------------------------
+  function Es_Posible_Resolver( Img : in T_Imagen ; P : in T_Pista ) return Boolean is
+    contador : T_Contador;
+  begin
+    Contar_cuadros( Img , P.Fil , P.Col , contador );
+
+    if  (P.Valor = 0) 
+        --(Es_Esquina( Img , P.Fil , P.Col) AND P.Valor = 4) OR
+        --(Es_Lateral( Img , P.Fil , P.Col ) AND P.Valor = 6) OR
+        --(Es_Interior( Img , P.Fil , P.Col ) AND P.Valor = 9) OR
+        --(P.Valor = contador(Negro)) OR
+        --(contador(Duda) + contador(Negro) = P.Valor) 
+        then
+
+      return True;
+
+    else
+      return False;
+
+    end if;
+  end Es_Posible_Resolver;
+
+  -------------------
+  -- Obtener_Pista --
+  -------------------
+  procedure Obtener_Pista( Filas , Columnas : in Integer ; Lp : in T_Lista_E_Pistas ; P : out T_Pista ) is
+    fila_teclado , columna_teclado : Integer;
+    I : Integer := Lp.Rest'First;
+  begin
+
+    loop
+      Put("Número de fila: "); Get( fila_teclado ); New_Line;
+      Put("Número de columna: ");Get( columna_teclado ); New_Line;
+
+      exit when fila_teclado in 1 .. Filas AND columna_teclado in 1 .. Columnas;
+
+      Put_Line("Debe insertar un número dentro de los rangos.");
+
+    end loop;
+
+    -- Recorremos la lista estática para encontrar la primera pista con la fila y columna indicada
+
+    loop 
+
+      if Lp.Rest(I).Fil = fila_teclado AND Lp.Rest(I).Col = columna_teclado then
+        P := Lp.Rest(I);
+        exit;
+      end if;
+
+      exit when I > Lp.Cont;
+
+      I := I + 1;
+
+    end loop;
+
+  end Obtener_Pista;
+
+
+  --------------
+  -- Resolver --
+  --------------
+  function Resolver( Filas , Columnas : in Integer ; Lp : in T_Lista_E_Pistas ) return T_Imagen is
+    I : T_Imagen( 1..Filas , 1..Columnas ) := ( others => ( others => Duda ) );
+    pista : T_Pista;
+    salir : Boolean := False;
+  begin
+
+    while not Completa(I) OR not salir loop
+
+      Buscar_Pista(Lp => Lp, Img => I, P => pista);
+      Colorear( I , pista );
+
+      if pista.Valor = Integer'First then
+        Put_Line("No hay más pistas para resolver");
+        salir := True;
+      end if;
+
+    end loop;
+
+    return I;
+  end Resolver;
+
+  ------------
+  -- Fase_1 --
+  ------------
+  procedure Fase_1( filas , columnas : in Integer ; Lp : in out T_Lista_E_Pistas ; Sol : out T_lista_D_Pistas ) is
+    imagen : T_Imagen := Imagen_vacia( filas , columnas );
+
+  begin
+
+    imagen := Resolver( filas , columnas , Lp );
+
+  end Fase_1;
+
+
+  ------------
+  -- Fase_2 --
+  ------------
+  procedure Fase_2( filas , columnas : in Integer ; LP : in out T_Lista_E_Pistas ; Sol : in out T_Lista_D_Pistas ) is
+  begin
+    null;
+  end Fase_2;
 
 
 end P_Imagen_Escondida;
