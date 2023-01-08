@@ -1,2 +1,8 @@
 escondida.gpr
 README.md
+p_imagen_escondida.o
+p_imagen_escondida.ali
+pruebas.ali
+pruebas.o
+*.pdf
+*.txt
