@@ -18,14 +18,15 @@ procedure pruebas is
 
    nombre_fichero : T_nombre_Fichero;
 
-   procedure Seleccionar_fichero (Extension: in String; nombre_fichero:out T_nombre_Fichero) is
-      Ficheros: Search_Type;
+   procedure Seleccionar_fichero ( Extension: in String; nombre_fichero : out T_nombre_Fichero ) is
+      Ficheros : Search_Type;
       type T_L_Ficheros is array (1..9) of Directory_Entry_Type;
-      L_Juegos: T_L_Ficheros;
-      I: Integer;
-      Opcion: Integer;
+      L_Juegos : T_L_Ficheros;
+      I : Integer;
+      Opcion : Integer;
    begin
       loop
+      
          I := 0;
 
          Start_Search( Search => Ficheros,
@@ -46,16 +47,20 @@ procedure pruebas is
 
          Get(Opcion);
 
-         exit when Opcion in 0..I;
+         exit when Opcion in 0 .. I;
 
-         Put_Line("ERROR: Se esperaba un número entre 0 y"&I'Img);
+         Put_Line( "ERROR: Se esperaba un número entre 0 y" & I'Img );
 
          New_Line;
+
       end loop;
-      if Opcion >0 then
+
+      if Opcion > 0 then
+
          nombre_fichero.long := Base_Name(Simple_Name(L_Juegos(Opcion)))'length;
          nombre_fichero.name(1..nombre_fichero.long) := Base_Name(Simple_Name(L_Juegos(Opcion)));
-       end if;
+
+      end if;
    end Seleccionar_Fichero;
 
 begin
@@ -107,9 +112,8 @@ begin
    Put_Line("                          |     /        |     /     ~-.     `-. _  _  _");
    Put_Line("                          |_____|        |_____|         ~ - . _ _ _ _ _>");
 
-
    New_Line(2);
-   Put_Line("(C)2022 Li Loaiza, Yeray                ");
+   Put_Line("(C)2022 Li Loaiza, Yeray");
    loop
       loop
          Put_Line("+================+");
@@ -129,25 +133,31 @@ begin
       end loop;
 
       exit when Opcion = 0;
+
       case Opcion is
          when 1 =>
 
-            Seleccionar_fichero("txt",nombre_fichero);
-            Put("Cargando " & nombre_Fichero.name(1..nombre_fichero.long) &"..."); New_Line;
-            Iniciar_Juego(nombre_Fichero.name(1..nombre_fichero.long),F,C,L_Pistas);
-            Fase_1(F,C,L_Pistas,Solucion);
+            Seleccionar_fichero( "txt" , nombre_fichero );
+            Put( "Cargando " & nombre_Fichero.name( 1..nombre_fichero.long ) & "..." ); New_Line;
+            Iniciar_Juego( nombre_Fichero.name( 1..nombre_fichero.long ) , F , C , L_Pistas );
+            Fase_1( F , C , L_Pistas , Solucion );
             
          when 2 =>
-            Seleccionar_fichero("txt",nombre_fichero);
-            Put("Cargando " & nombre_Fichero.name(1..nombre_fichero.long) &"..."); New_Line;
-            Iniciar_Juego(nombre_Fichero.name(1..nombre_fichero.long),F,C,L_Pistas);
-            Fase_2(F,C,L_Pistas,Solucion);
+
+            Seleccionar_fichero( "txt" , nombre_fichero );
+            Put( "Cargando " & nombre_Fichero.name( 1..nombre_fichero.long ) & "..." ); New_Line;
+            Iniciar_Juego( nombre_Fichero.name( 1..nombre_fichero.long ) , F , C , L_Pistas );
+            Fase_2( F , C , L_Pistas , Solucion );
+
          when 3 =>
-            Seleccionar_fichero("game", nombre_fichero);
-            Put("Reanudando " & nombre_Fichero.name(1..nombre_fichero.long) &"..."); New_Line;
-            Reanudar_Juego(nombre_Fichero.name(1..nombre_fichero.long),F,C,L_Pistas,Solucion);
-            Fase_2(F,C,L_Pistas,Solucion);
+
+            Seleccionar_fichero( "game" , nombre_fichero );
+            Put( "Reanudando " & nombre_Fichero.name( 1..nombre_fichero.long ) & "..." ); New_Line;
+            Reanudar_Juego( nombre_Fichero.name( 1..nombre_fichero.long ) , F , C , L_Pistas , Solucion );
+            Fase_2( F , C , L_Pistas , Solucion );
+
          when others =>
+
             --Seleccionar_fichero("game", nombre_fichero);
             --Toma el último nombre de fichero seleccionado
             if exists(compose(Current_Directory,nombre_Fichero.name(1..nombre_fichero.long),"game")) then
@@ -156,7 +166,9 @@ begin
             end if;
             Put_Line("Guardando "&compose(Current_Directory,nombre_Fichero.name(1..nombre_fichero.long),"game"));
             Guardar_Juego(nombre_Fichero.name(1..nombre_fichero.long), F,C,L_Pistas, Solucion);
+      
       end case;
+
    end loop;
 
    Put_Line("Fin del programa");

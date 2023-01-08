@@ -101,11 +101,12 @@ package body P_Imagen_Escondida is
   -- Contar_cuadros --
   --------------------
   procedure Contar_cuadros(Img : in T_Imagen ; Fil , Col : in Integer ; Contador : out T_contador) is
+    prueba : boolean := Fil - 1 in Img'Range(1);
   begin
 
     for I in Fil - 1 .. Fil + 1 loop
-      for J in Col -1 .. Col + 1 loop
-        if Existe_coordenadas( Img , Fil , Col ) then
+      for J in Col - 1 .. Col + 1 loop
+        if Existe_coordenadas( Img , I , J ) then
 
           case Img( I , J ) is
             when Duda =>
@@ -152,40 +153,76 @@ package body P_Imagen_Escondida is
   procedure Pintar_Negro( Img : in out T_Imagen ; Fil , Col : in Integer ) is
   begin
 
-    if Img( Fil - 1 , Col - 1 ) = Duda AND Existe_coordenadas( Img , Fil - 1 , Col - 1 ) then
-      Img( Fil - 1 , Col - 1 ) := Negro;
+    if Existe_coordenadas( Img , Fil - 1 , Col - 1 ) then
+    
+      if Img( Fil - 1 , Col - 1 ) = Duda then
+        Img( Fil - 1 , Col - 1 ) := Negro;
+      end if;
+
     end if;
 
-    if Img( Fil - 1 , Col ) = Duda AND Existe_coordenadas( Img , Fil - 1 , Col ) then
-      Img( Fil - 1 , Col ) := Negro; 
+    if Existe_coordenadas( Img , Fil - 1 , Col ) then
+    
+      if Img( Fil - 1 , Col ) = Duda then
+        Img( Fil - 1 , Col ) := Negro; 
+      end if;
+
     end if;
 
-    if Img( Fil - 1 , Col + 1 ) = Duda AND Existe_coordenadas( Img , Fil - 1 , Col + 1 ) then
-      Img( Fil - 1 , Col + 1 ) := Negro;
+    if Existe_coordenadas( Img , Fil - 1 , Col + 1 ) then
+    
+      if Img( Fil - 1 , Col + 1 ) = Duda then
+        Img( Fil - 1 , Col + 1 ) := Negro;
+      end if;
+
     end if;
 
-    if Img( Fil , Col - 1 ) = Duda AND Existe_coordenadas( Img , Fil , Col - 1 ) then
-      Img( Fil , Col - 1 ) := Negro;
+    if Existe_coordenadas( Img , Fil , Col - 1 ) then
+    
+      if Img( Fil , Col - 1 ) = Duda then
+        Img( Fil , Col - 1 ) := Negro;
+      end if;
+
     end if;
 
-    if Img( Fil , Col ) = Duda AND Existe_coordenadas( Img , Fil , Col ) then
-      Img( Fil , Col ) := Negro;
+    if Existe_coordenadas( Img , Fil , Col ) then
+    
+      if Img( Fil , Col ) = Duda then
+        Img( Fil , Col ) := Negro;
+      end if;
+
     end if;
 
-    if Img( Fil , Col + 1 ) = Duda AND Existe_coordenadas( Img , Fil , Col + 1 ) then
-      Img( Fil , Col + 1 ) := Negro;
+    if Existe_coordenadas( Img , Fil , Col + 1 ) then
+    
+      if Img( Fil , Col + 1 ) = Duda then
+        Img( Fil , Col + 1 ) := Negro;
+      end if;
+
     end if;
 
-    if Img( Fil + 1 , Col - 1 ) = Duda AND Existe_coordenadas( Img , Fil + 1 , Col - 1 ) then
-      Img( Fil + 1 , Col - 1 ) := Negro;
+    if Existe_coordenadas( Img , Fil + 1 , Col - 1 ) then
+    
+      if Img( Fil + 1 , Col - 1 ) = Duda then
+        Img( Fil + 1 , Col - 1 ) := Negro;
+      end if;
+
     end if;
 
-    if Img( Fil + 1 , Col ) = Duda AND Existe_coordenadas( Img , Fil + 1 , Col ) then
-      Img( Fil - 1 , Col ) := Negro;
+    if Existe_coordenadas( Img , Fil + 1 , Col ) then
+    
+      if Img( Fil + 1 , Col ) = Duda then
+        Img( Fil + 1 , Col ) := Negro;
+      end if;
+
     end if;
 
-    if Img( Fil + 1 , Col + 1 ) = Duda AND Existe_coordenadas( Img , Fil + 1 , Col + 1 ) then
-      Img( Fil + 1 , Col + 1 ) := Negro;
+    if Existe_coordenadas( Img , Fil + 1 , Col + 1 ) then
+    
+      if Img( Fil + 1 , Col + 1 ) = Duda then
+        Img( Fil + 1 , Col + 1 ) := Negro;
+      end if;
+
     end if;
 
   end Pintar_Negro;
@@ -193,40 +230,76 @@ package body P_Imagen_Escondida is
   procedure Pintar_Blanco( Img : in out T_Imagen ; Fil , Col : in Integer ) is
   begin
 
-    if Img( Fil - 1 , Col - 1 ) = Duda AND Existe_coordenadas( Img , Fil - 1 , Col - 1 ) then
+    if Existe_coordenadas( Img , Fil - 1 , Col - 1 ) then
+    
+    if Img( Fil - 1 , Col - 1 ) = Duda then
       Img( Fil - 1 , Col - 1 ) := Blanco;
     end if;
 
-    if Img( Fil - 1 , Col ) = Duda AND Existe_coordenadas( Img , Fil - 1 , Col ) then
+    end if;
+
+    if Existe_coordenadas( Img , Fil - 1 , Col ) then
+    
+    if Img( Fil - 1 , Col ) = Duda then
       Img( Fil - 1 , Col ) := Blanco; 
     end if;
 
-    if Img( Fil - 1 , Col + 1 ) = Duda AND Existe_coordenadas( Img , Fil - 1 , Col + 1 ) then
+    end if;
+
+    if Existe_coordenadas( Img , Fil - 1 , Col + 1 ) then
+    
+    if Img( Fil - 1 , Col + 1 ) = Duda then
       Img( Fil - 1 , Col + 1 ) := Blanco;
     end if;
 
-    if Img( Fil , Col - 1 ) = Duda AND Existe_coordenadas( Img , Fil , Col - 1 ) then
+    end if;
+
+    if Existe_coordenadas( Img , Fil , Col - 1 ) then
+    
+    if Img( Fil , Col - 1 ) = Duda then
       Img( Fil , Col - 1 ) := Blanco;
     end if;
 
-    if Img( Fil , Col ) = Duda AND Existe_coordenadas( Img , Fil , Col ) then
+    end if;
+
+    if Existe_coordenadas( Img , Fil , Col ) then
+    
+    if Img( Fil , Col ) = Duda then
       Img( Fil , Col ) := Blanco;
     end if;
 
-    if Img( Fil , Col + 1 ) = Duda AND Existe_coordenadas( Img , Fil , Col + 1 ) then
+    end if;
+
+    if Existe_coordenadas( Img , Fil , Col + 1 ) then
+    
+    if Img( Fil , Col + 1 ) = Duda then
       Img( Fil , Col + 1 ) := Blanco;
     end if;
 
-    if Img( Fil + 1 , Col - 1 ) = Duda AND Existe_coordenadas( Img , Fil + 1 , Col - 1 ) then
+    end if;
+
+    if Existe_coordenadas( Img , Fil + 1 , Col - 1 ) then
+    
+    if Img( Fil + 1 , Col - 1 ) = Duda then
       Img( Fil + 1 , Col - 1 ) := Blanco;
     end if;
 
-    if Img( Fil + 1 , Col ) = Duda AND Existe_coordenadas( Img , Fil + 1 , Col ) then
+    end if;
+
+    if Existe_coordenadas( Img , Fil + 1 , Col ) then
+    
+    if Img( Fil + 1 , Col ) = Duda then
       Img( Fil - 1 , Col ) := Blanco;
     end if;
 
-    if Img( Fil + 1 , Col + 1 ) = Duda AND Existe_coordenadas( Img , Fil + 1 , Col + 1 ) then
+    end if;
+
+    if Existe_coordenadas( Img , Fil + 1 , Col + 1 ) then
+    
+    if Img( Fil + 1 , Col + 1 ) = Duda then
       Img( Fil + 1 , Col + 1 ) := Blanco;
+    end if;
+
     end if;
 
   end Pintar_Blanco;
@@ -255,7 +328,7 @@ package body P_Imagen_Escondida is
       Pintar_Blanco( Img , P.Fil , P.Col);
 
     elsif contador(Duda) + contador(Negro) = P.Valor then -- ya se han pintado todas las blancas, hay q pintar negras
-    Pintar_Negro( Img , P.Fil , P.Col);
+      Pintar_Negro( Img , P.Fil , P.Col);
 
     end if;
 
@@ -272,12 +345,11 @@ package body P_Imagen_Escondida is
     for I in L.Rest'First .. L.Cont loop
 
       Put_Line("Posición: (fila, columna)");
-      Put( L.Rest(1).Fil ); Put(", ");
-      Put( L.Rest(2).Col );
+      Put( L.Rest(I).Fil ); Put(","); Put( L.Rest(I).Col );
       
       New_line;
 
-      Put("Valor: "); Put(L.Rest(3).Valor);
+      Put("Valor: "); Put(L.Rest(I).Valor);
 
       New_line(2);
 
@@ -443,7 +515,7 @@ package body P_Imagen_Escondida is
   procedure Iniciar_Juego ( Ruta : in String ; filas , columnas : out Integer ; LP : out T_Lista_E_Pistas ) is
     F : File_Type;
     Caracter : Character;
-    L : T_Lista_E_Pistas := (Cont => 0 , Rest => ( others => (Fil => 0, Col => 0, Valor => 0) ) );
+    L : T_Lista_E_Pistas := (Cont => 0 , Rest => ( others => (Fil => 1, Col => 1, Valor => Integer'First) ) );
     indice : Integer := Lp.Rest'First;
   begin
     Open( F , In_File , Ruta & ".txt" );
@@ -463,9 +535,10 @@ package body P_Imagen_Escondida is
 
           Lp.Cont := Lp.Cont + 1;
 
+          indice := indice + 1;
+
         end if;
 
-        indice := indice + 1;
 
       end loop;
 
@@ -562,20 +635,23 @@ package body P_Imagen_Escondida is
   begin
     Contar_cuadros( Img , P.Fil , P.Col , contador );
 
-    if  (P.Valor = 0) 
-        --(Es_Esquina( Img , P.Fil , P.Col) AND P.Valor = 4) OR
-        --(Es_Lateral( Img , P.Fil , P.Col ) AND P.Valor = 6) OR
-        --(Es_Interior( Img , P.Fil , P.Col ) AND P.Valor = 9) OR
-        --(P.Valor = contador(Negro)) OR
-        --(contador(Duda) + contador(Negro) = P.Valor) 
-        then
+    if Existe_coordenadas( Img , P.Fil , P.Col) then
 
-      return True;
+      if  (P.Valor = 0) OR
+          (Es_Esquina( Img , P.Fil , P.Col) AND P.Valor = 4) OR
+          (Es_Lateral( Img , P.Fil , P.Col ) AND P.Valor = 6) OR
+          (Es_Interior( Img , P.Fil , P.Col ) AND P.Valor = 9) OR
+          (P.Valor = contador(Negro)) OR
+          (contador(Duda) + contador(Negro) = P.Valor) 
+          then
 
-    else
-      return False;
+        return True;
+
+      end if;
 
     end if;
+
+    return False;
   end Es_Posible_Resolver;
 
   -------------------
@@ -619,19 +695,24 @@ package body P_Imagen_Escondida is
   --------------
   function Resolver( Filas , Columnas : in Integer ; Lp : in T_Lista_E_Pistas ) return T_Imagen is
     I : T_Imagen( 1..Filas , 1..Columnas ) := ( others => ( others => Duda ) );
+    J : Integer := Lp.Rest'First;
     pista : T_Pista;
     salir : Boolean := False;
   begin
 
-    while not Completa(I) OR not salir loop
+    while not Completa(I) AND not salir loop
 
-      Buscar_Pista(Lp => Lp, Img => I, P => pista);
+      pista := Lp.Rest(J);
+
+      Buscar_Pista( Lp, I, pista );
       Colorear( I , pista );
 
-      if pista.Valor = Integer'First then
+      if pista.Valor = Integer'First OR J > Lp.Cont then
         Put_Line("No hay más pistas para resolver");
         salir := True;
       end if;
+
+      J := J + 1;
 
     end loop;
 
@@ -646,7 +727,19 @@ package body P_Imagen_Escondida is
 
   begin
 
-    imagen := Resolver( filas , columnas , Lp );
+    Mostrar( imagen );
+
+    Mostrar( Lp );
+
+    Put_Line("Resolviendo...");
+
+    while not Completa( imagen ) loop
+
+      imagen := Resolver( filas , columnas , Lp );
+
+    end loop;
+
+    Mostrar( imagen );
 
   end Fase_1;
 
