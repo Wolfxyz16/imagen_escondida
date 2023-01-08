@@ -29,7 +29,7 @@ package P_Imagen_Escondida is
    procedure Mostrar( Img : in T_Imagen );
    --Salida: Muestra en pantalla el contenido de la imagen oculta
 
-   function Existe_coordenadas( Img : in T_Imagen ; Fil , Col : in Integer );
+   function Existe_coordenadas( Img : in T_Imagen ; Fil , Col : in Integer ) return Boolean;
    --Post: True <-> Las coordenadas están dentro del rango de la imagen
 
    procedure Contar_cuadros( Img : in T_Imagen ; Fil , Col : in Integer ; Contador : out T_contador );
@@ -44,7 +44,12 @@ package P_Imagen_Escondida is
       Fil , Col , Valor : Integer;
    end record;
 
-   procedure Colorear (Img : in out T_Imagen ; P : in T_Pista);
+   procedure Pintar_Negro( Img : in out T_Imagen ; Fil , Col : in Integer );
+   procedure Pintar_Blanco( Img : in out T_Imagen ; Fil , Col : in Integer );
+   -- Reciben una coordenada y pintan en la imagen recibidatodas las casillas de tipo
+   -- duda a su alrededor de blanco o negro
+
+   procedure Colorear( Img : in out T_Imagen ; P : in T_Pista );
    --pre: P es una pista que se puede resolver
    --Post: Imagen integra la pista dada
 

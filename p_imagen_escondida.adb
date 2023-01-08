@@ -83,7 +83,7 @@ package body P_Imagen_Escondida is
   ------------------------
   -- Existe_coordenadas --
   ------------------------
-  function Existe_coordenadas(Img : in T_Imagen ; Fil , Col : in Integer) return Boolean is
+  function Existe_coordenadas( Img : in T_Imagen ; Fil , Col : in Integer ) return Boolean is
   begin
 
     if Fil in Img'Range(1) AND Col in Img'Range(2) then
@@ -143,15 +143,117 @@ package body P_Imagen_Escondida is
     return True;
   end Completa;
 
+  ---------------------------
+  -- Pintar Negro | Blanco --
+  ---------------------------
+  procedure Pintar_Negro( Img : in out T_Imagen ; Fil , Col : in Integer ) is
+  begin
+
+    if Img( Fil - 1 , Col - 1 ) = Duda AND Existe_coordenadas( Img , Fil - 1 , Col - 1 ) then
+      Img( Fil - 1 , Col - 1 ) := Negro;
+    end if;
+
+    if Img( Fil - 1 , Col ) = Duda AND Existe_coordenadas( Img , Fil - 1 , Col ) then
+      Img( Fil - 1 , Col ) := Negro; 
+    end if;
+
+    if Img( Fil - 1 , Col + 1 ) = Duda AND Existe_coordenadas( Img , Fil - 1 , Col + 1 ) then
+      Img( Fil - 1 , Col + 1 ) := Negro;
+    end if;
+
+    if Img( Fil , Col - 1 ) = Duda AND Existe_coordenadas( Img , Fil , Col - 1 ) then
+      Img( Fil , Col - 1 ) := Negro;
+    end if;
+
+    if Img( Fil , Col ) = Duda AND Existe_coordenadas( Img , Fil , Col ) then
+      Img( Fil , Col ) := Negro;
+    end if;
+
+    if Img( Fil , Col + 1 ) = Duda AND Existe_coordenadas( Img , Fil , Col + 1 ) then
+      Img( Fil , Col + 1 ) := Negro;
+    end if;
+
+    if Img( Fil + 1 , Col - 1 ) = Duda AND Existe_coordenadas( Img , Fil + 1 , Col - 1 ) then
+      Img( Fil + 1 , Col - 1 ) := Negro;
+    end if;
+
+    if Img( Fil + 1 , Col ) = Duda AND Existe_coordenadas( Img , Fil + 1 , Col ) then
+      Img( Fil - 1 , Col ) := Negro;
+    end if;
+
+    if Img( Fil + 1 , Col + 1 ) = Duda AND Existe_coordenadas( Img , Fil + 1 , Col + 1 ) then
+      Img( Fil + 1 , Col + 1 ) := Negro;
+    end if;
+
+  end Pintar_Negro;
+
+  procedure Pintar_Blanco( Img : in out T_Imagen ; Fil , Col : in Integer ) is
+  begin
+
+    if Img( Fil - 1 , Col - 1 ) = Duda AND Existe_coordenadas( Img , Fil - 1 , Col - 1 ) then
+      Img( Fil - 1 , Col - 1 ) := Blanco;
+    end if;
+
+    if Img( Fil - 1 , Col ) = Duda AND Existe_coordenadas( Img , Fil - 1 , Col ) then
+      Img( Fil - 1 , Col ) := Blanco; 
+    end if;
+
+    if Img( Fil - 1 , Col + 1 ) = Duda AND Existe_coordenadas( Img , Fil - 1 , Col + 1 ) then
+      Img( Fil - 1 , Col + 1 ) := Blanco;
+    end if;
+
+    if Img( Fil , Col - 1 ) = Duda AND Existe_coordenadas( Img , Fil , Col - 1 ) then
+      Img( Fil , Col - 1 ) := Blanco;
+    end if;
+
+    if Img( Fil , Col ) = Duda AND Existe_coordenadas( Img , Fil , Col ) then
+      Img( Fil , Col ) := Blanco;
+    end if;
+
+    if Img( Fil , Col + 1 ) = Duda AND Existe_coordenadas( Img , Fil , Col + 1 ) then
+      Img( Fil , Col + 1 ) := Blanco;
+    end if;
+
+    if Img( Fil + 1 , Col - 1 ) = Duda AND Existe_coordenadas( Img , Fil + 1 , Col - 1 ) then
+      Img( Fil + 1 , Col - 1 ) := Blanco;
+    end if;
+
+    if Img( Fil + 1 , Col ) = Duda AND Existe_coordenadas( Img , Fil + 1 , Col ) then
+      Img( Fil - 1 , Col ) := Blanco;
+    end if;
+
+    if Img( Fil + 1 , Col + 1 ) = Duda AND Existe_coordenadas( Img , Fil + 1 , Col + 1 ) then
+      Img( Fil + 1 , Col + 1 ) := Blanco;
+    end if;
+
+  end Pintar_Blanco;
+
   --------------
   -- Colorear --
   --------------
   procedure Colorear ( Img : in out T_Imagen ; P : in T_Pista ) is
+    -- recibe una pista que se puede resolver y pinta la imagen
     contador : T_Contador;
   begin
     Contar_cuadros( Img , P.Fil , P.Col , contador );
 
-    if P.Valor = contador(3) then -- hay tantas
+    if P.Valor = 0 then -- pintar todas Blancas
+      Pintar_Blanco( Img , P.Fil , P.Col);
+    
+    elsif 
+      Es_Esquina( Img , P.Fil , P.Col) AND P.Valor = 4 OR
+      Es_Lateral( Img , P.Fil , P.Col ) AND P.Valor = 6 OR
+      Es_Interior( Img , P.Fil , P.Col ) AND P.Valor = 9 then
+      -- todas las casilla se PINTAN de negro
+
+      Pintar_Negro( Img , P.Fil , P.Col);
+    
+    elsif P.Valor = contador(3) then -- todas las negras estan pintadas, son blancas las dudas
+      Pintar_Blanco( Img , P.Fil , P.Col);
+
+    elsif contador(1) + contador(3) = P.Valor then -- ya se han pintado todas las blancas, hay q pintar negras
+    Pintar_Negro( Img , P.Fil , P.Col);
+
 
     end if;
 
@@ -187,7 +289,8 @@ package body P_Imagen_Escondida is
   begin
 
     if L.Cont < L.Rest'Length then
-      
+      L.Rest( L.Cont + 1 ) := P;
+      L.Cont := L.Cont + 1;
     end if;
 
   end Anadir;
@@ -195,16 +298,45 @@ package body P_Imagen_Escondida is
   ------------
   -- Borrar --
   ------------
-  procedure Borrar (L: in out T_Lista_E_Pistas; P: in T_Pista) is null;
+  procedure Borrar (L: in out T_Lista_E_Pistas; P: in T_Pista) is
+    I : Integer := L.Rest'First;
+  begin
 
-   ------------------
-   -- Buscar_Pista --
-   ------------------
-   procedure Buscar_Pista
-     (Lp: in T_Lista_E_Pistas;
-      Img: in T_Imagen;
-      P: out T_Pista)
-   is null;
+    loop
+
+      if P = L( I ) then
+
+        L( I .. L.Cont - 1 ) := L( I + 1 .. L.Cont);
+        L.Cont := L.Cont - 1;
+        exit;
+
+      end if;
+
+      exit when I = L.Cont;
+
+      I := I + 1;
+
+    end loop;
+
+  end Borrar;
+
+  ------------------
+  -- Buscar_Pista --
+  ------------------
+  procedure Buscar_Pista( Lp : in T_Lista_E_Pistas ; Img : in T_Imagen ; P : out T_Pista ) is
+    -- P es una pista que se puede aplicar en img
+    I : Integer := Lp'First;
+  begin
+
+    loop
+
+      exit when I = L.Cont;
+
+      I := I + 1;
+
+    end loop;
+
+  end Buscar_Pista;
 
    --------------
    -- longitud --
@@ -234,11 +366,10 @@ package body P_Imagen_Escondida is
    -------------------
    -- Iniciar_Juego --
    -------------------
-   procedure Iniciar_Juego
-     (Ruta: in String;
-      filas,columnas:  out Integer;
-      LP :  out T_Lista_E_Pistas)
-   is null;
+   procedure Iniciar_Juego ( Ruta : in String ; filas ,columnas : out Integer ; LP :  out T_Lista_E_Pistas )
+   is begin
+
+   end Iniciar_Juego;
 
 
    -------------------
